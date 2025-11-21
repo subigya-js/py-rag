@@ -2,8 +2,8 @@
 import os
 from langchain_community.document_loaders import TextLoader, DirectoryLoader
 from langchain_text_splitters import CharacterTextSplitter
-# from langchain_openai import OpenAIEmbeddings
-# from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_chroma import Chroma
 # from dotenv import load_dotenv
 
 # load_dotenv()
@@ -69,6 +69,30 @@ def split_documents(documents, chunk_size=800, chunk_overlap=0):
 
     return chunks
 
+# Creating Embeddings and Storing in Vector DB
+
+
+def create_vector_store(chunks, persist_directory="db/chorma_db"):
+    """Create and persist ChromaDB vector store"""
+    print("Creating embeddings and storing in ChromaDB...")
+
+    embedding_model = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
+    )
+
+    # Create ChromaDB vector store
+    print("--- Creating vector store ---")
+    vectorstore = Chroma.from_documents(
+        documents=chunks,
+        embedding=embedding_model,
+        persist_directory=persist_directory,
+        collection_metadata={"hnsw:space": "cosine"}
+    )
+
+    print("--- Finished creating vector store ---")
+    print(f"Vector store created and saved to {persist_directory}")
+    return vectorstore
+
 
 def main():
     print("Main function")
@@ -78,6 +102,7 @@ def main():
     # 2. Chunking the files
     chunks = split_documents(documents)
     # 3. Embedding and Storing in the Vector DB
+    vectorstore = create_vector_store(chunks)
 
 
 if __name__ == "__main__":
