@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-persistent_directory = "db/chroma_db"
+persistent_directory = "db/chorma_db"
 
 # Load embeddings and vector store
 embedding_model = OpenAIEmbeddings(model="text-embedding-3-small")
@@ -15,12 +15,13 @@ db = Chroma(
     collection_metadata={"hnsw:space": "cosine"}
 )
 # Search for relevant documents
-query = "Which island does SpaceX lease for its launches in the Pacific?"
+query = "How much did Microsoft pay to acquire GitHub?"
 
-retriever = db.as_retriever(search_kwargs={"k": 3})
+# This means: return top 3 most similar documents
+retriever = db.as_retriever(search_kwargs={"k": 5})
 
 # retriever = db.as_retriever(
-#     search_type="smiilatiry_score_threshold",
+#     search_type="similarity_score_threshold",
 #     search_kwargs={
 #         "k": 5,
 #         "score_threshold": 0.3 # Only return chunks with cosine similarity >= 0.3
