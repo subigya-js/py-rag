@@ -33,9 +33,9 @@ retriever = db.as_retriever(
 relevant_docs = retriever.invoke(query)
 print(f"User Query: {query}\n")
 # Display results
-# print("--- Context ---")
-# for i, doc in enumerate(relevant_docs, 1):
-#     print(f"Document {i}:\n{doc.page_content}\n")
+print("--- Context ---")
+for i, doc in enumerate(relevant_docs, 1):
+    print(f"Document {i}:\n{doc.page_content}\n")
 
 # Combine the query and the relevant document contents
 combine_input = f"""Based on the following documents, please answer this question: {query}
